@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.cache.ReadWriteCache.Item;
+
 public class Category implements Serializable, Comparable {
 	private Long id = null;
 	private int version = 0;
@@ -73,8 +75,94 @@ public class Category implements Serializable, Comparable {
 		return this.childCategories;
 	}
 	
+	public Category getParentCategory() {
+		return this.parentCategory;
+	}
+	
+	private void setParentCategory(Category parentCategory) {
+		this.parentCategory = parentCategory;
+	}
+	
 	public void addChildCategory(Category childCategory) {
 		if(childCategory == null)
 			throw new IllegalArgumentException("Null child category!");
+		
+		if(childCategory.getParentCategory() != null) {
+			childCategory.getParentCategory().getChildCategories().remove(childCategory);
+		}
+		childCategory.setParentCategory(parentCategory);
+		childCategories.add(childCategory);
 	}
+	
+	public void removeChildCategory(Category childCategory) {
+		if(childCategory == null)
+			throw new IllegalArgumentException("Null child category");
+		childCategory.setParentCategory(null);
+		childCategories.remove(childCategory);
+	}
+	
+	public List<Item> getItems() {
+		return items;
+	}
+	
+	public void addItem(Item item) {
+		if(item == null)
+			throw new IllegalArgumentException("Null item");
+		
+		items.add(item);
+		item.getCategories().add(this);
+	}
+	
+	public void removeItem(Item item) {
+		if(item == null)
+			throw new IllegalArgumentException("Null item");
+		
+		items.remove(item);
+		item.getCategories().remove(this);
+	}
+	
+	public Set<CategorizedItemComponent> getCategorizedItemComponents() {
+		return categorizedItemComponents;
+	}
+	
+	public Map<Item, User> getItemsAndUser() {
+		return itemsAndUser;
+	}
+	
+	public Date getCreated() {
+		return created;
+	}
+	
+	public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final Category category = (Category) o;
+
+        if (!created.equals(category.created)) return false;
+        if (!name.equals(category.name)) return false;
+        return !(parentCategory != null ?
+                !parentCategory.equals(category.parentCategory) :
+                category.parentCategory != null);
+
+    }
+	
+	public int hashCode() {
+        int result;
+        result = name.hashCode();
+        result = 29 * result + (parentCategory != null ? parentCategory.hashCode() : 0);
+        result = 29 * result + created.hashCode();
+        return result;
+    }
+	
+	public int compareTo(Object o) {
+        if (o instanceof Category) {
+            return this.getName().compareTo( ((Category)o).getName() );
+        }
+        return 0;
+    }
+	
+	public String toString() {
+        return  "(" + getId() + ") Name: '" + getName();
+    }
 }
