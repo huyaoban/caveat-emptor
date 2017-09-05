@@ -5,7 +5,7 @@ import java.util.Date;
 
 public abstract class BillingDetails implements Serializable, Comparable {
 	private Long id = null;
-	private String version = 0;
+	private int version = 0;
 	
 	private String owner;
 	private User user;
@@ -25,7 +25,7 @@ public abstract class BillingDetails implements Serializable, Comparable {
 		return id;
 	}
 	
-	public String getVersion() {
+	public int getVersion() {
 		return version;
 	}
 	

@@ -1,7 +1,7 @@
 package com.huyaoban.caveatemptor.model;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 
 public class Bid implements Serializable, Comparable {
 	private Long id = null;
@@ -58,7 +58,7 @@ public class Bid implements Serializable, Comparable {
 		
 		final Bid bid = (Bid)o;
 		
-		if(!getItem().getId().equal(bid.getItem().getId()))
+		if(!getItem().getId().equals(bid.getItem().getId()))
 			return false;
 		
 		if(!(getCreated().getTime() == bid.getCreated().getTime()))

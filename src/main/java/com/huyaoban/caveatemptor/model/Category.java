@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.cache.ReadWriteCache.Item;
 
 public class Category implements Serializable, Comparable {
 	private Long id = null;
@@ -120,6 +119,8 @@ public class Category implements Serializable, Comparable {
 		items.remove(item);
 		item.getCategories().remove(this);
 	}
+	
+	public Set<CategorizedItem> getCategorizedItems() { return categorizedItems; }
 	
 	public Set<CategorizedItemComponent> getCategorizedItemComponents() {
 		return categorizedItemComponents;
