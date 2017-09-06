@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.huyaoban.caveatemptor.model" default-access="field">
+	<class name="BillingDetails" table="billing_details" abstract="true">
+		<id name="id" type="long" column="billing_details_id">
+			<generator class="identity"></generator>
+		</id>
+		
+		<discriminator column="billing_details_type" type="string"/>
+		<version name="version" column="obj_version"/>
+		
+		<property name="owner"
+			column="owner"
+			type="string"
+			not-null="true"/>
+			
+		<property name="created"
+			column="created"
+			type="timestamp"
+			update="false"
+			not-null="true"/>
+			
+		<many-to-one name="user"
+			class="User"
+			column="user_id"
+			update="false"
+			foreign-key="FK_USER_ID"/>
+			
+		<subclass name="CreditCard" discriminator-value="CC">
+			<join table="credit_card" fetch="select">
+				<key column="credit_card_id" foreign-key="FK_CREDIT_CARD_SUPERCLASS"/>
+				
+				<property name="type"
+					type="credit_card_type"
+					column="cc_type"
+					update="false"
+					not-null="true"/>
+					
+				<property name="number"
+					type="string"
+					column="cc_number"
+					length="16"
+					update="false"
+					not-null="true"/>
+					
+				<property name="expMonth"
+					type="string"
+					column="cc_exp_month"
+					length="2"
+					update="false"
+					not-null="true"/>
+					
+				<property name="expYear"
+					type="string"
+					column="cc_exp_year"
+					length="4"
+					update="false"
+					not-null="true"/>
+			</join>
+		</subclass>
+		
+		<subclass name="BankAccount" discriminator-value="BA">
+			<property name="account"
+				type="string"
+				column="ba_account"
+				length="16"
+				not-null="false"/>
+				
+			<property name="bankname"
+				type="string"
+				column="ba_bankname"
+				length="255"
+				not-null="false"/>
+				
+			<property name="swift"
+				type="string"
+				column="ba_swift"
+				length="15"
+				not-null="false"/>
+		</subclass>
+	
+	</class>
+</hibernate-mapping>

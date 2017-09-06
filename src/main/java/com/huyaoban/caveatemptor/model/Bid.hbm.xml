@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD 3.0//EN" 
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.huyaoban.caveatemptor.model" default-access="field">
+	<class name="Bid"
+		table="bid"
+		mutable="false">
+		<id name="id" type="long" column="bid_id">
+			<generator class="identity"></generator>
+		</id>
+		
+		<property name="amount"
+			update="false"
+			type="monetary_amount_usd">
+			<column name="bid_amount" not-null="true" length="2"/>
+			<column name="bid_amount_currency" not-null="true" length="3"/>
+		</property>
+		
+		<property name="created"
+			column="created"
+			type="timestamp"
+			update="false"
+			not-null="true"/>
+			
+		<properties name="successReference">
+			<property name="successful"
+				column="is_successful"
+				type="true_false"
+				not-null="true"/>
+				
+			<many-to-one name="item"
+				class="Item"
+				column="item_id"
+				not-null="true"
+				insert="false"
+				update="false"
+				foreign-key="FK_ITEM_ID"/>
+		</properties>
+		
+		<many-to-one name="bidder"
+			class="User"
+			column="bidder_id"
+			update="false"
+			not-null="true"
+			foreign-key="FK_BIDDER_ID"/>
+		
+	</class>
+
+</hibernate-mapping>
